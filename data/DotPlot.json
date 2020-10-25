@@ -1,0 +1,132 @@
+{ "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+                      "width": 1080,
+                      "height" : 720,
+                      "Projection": {
+                          "type": "equirectanglar"
+                      },
+                      "layer": [{
+                          "data": {
+                              "url": "https://raw.githubusercontent.com/njcol7/FIT3179/main/ne_110m.json",
+                              "format": {
+                                  "type":"topojson",
+                                  "feature":"ne_110m_admin_0_countries"
+                              }
+                          },
+                          "mark": {
+                              "type":"geoshape",
+                              "fill":"lightgray",
+                              "stroke":"white"
+                          }
+                      },
+                      {
+                          "data": {
+                              "url" : "https://raw.githubusercontent.com/njcol7/FIT3179/main/gtaa.csv"
+                          },
+                          "transform" : [{
+                              "calculate": "year(datum.iyear)",
+                              "as": "Year"
+                          },
+                          {
+                              "filter" : "datum.longitude != 0 & datum.latitude != 0"
+                          },
+                          {
+                              "filter" : {
+                                  "not" : {
+                                      "field" : "attacktype1_txt",
+                                      "range": [0, 9]
+                                  }
+                              }
+                          },
+                          {
+                               "filter" : {
+                                   "field" : "nkill",
+                                   "range": [0, 10000]
+                               }
+                          }],
+                          "encoding":{
+                              "longitude":{
+                                  "field":"longitude",
+                                  "type":"quantitative"
+                              },
+                              "latitude":{
+                                  "field":"latitude",
+                                  "type":"quantitative"
+                              }
+                          },
+                          "layer" :[{
+                              "selection":{
+                                  "YearSelector":{
+                                      "type" : "single",
+                                      "fields": ["Year"],
+                                      "bind":{
+                                          "Year" : {
+                                              "input": "range",
+                                              "min": 1970,
+                                              "max": 2009,
+                                              "step": 1
+                                          }
+                                      },
+                                      "title" : "Test"
+                                  },
+                                  "TypeSelector":{
+                                       "type" : "multi",
+                                       "fields": ["attacktype1_txt"],
+                                       "bind" : "legend"
+                                  }
+                              },
+                              "transform": [{
+                                  "filter": {
+                                      "selection" : "YearSelector"
+                                  }
+                              }],
+                              "mark":{
+                                  "type" : "circle"
+                              },
+                              "encoding":{
+                                  "color": {
+                                      "field" : "attacktype1_txt",
+                                      "type" : "nominal",
+                                      "legend" : {
+                                          "title": "Attack Type"
+                                      }
+
+                                  },
+                                  "opacity":{
+                                      "condition": {
+                                           "selection": "TypeSelector",
+                                           "value" : 1,
+                                       },
+                                       "value": 0.2
+                                  },
+                                  "size": {
+                                      "field": "nkill",
+                                      "type":"quantitative",
+                                      "scale": null /*{
+                                          "bins": [0, 200, 400, 600, 800, 1000, 1200, 1400],
+                                          "range": [0, 200, 400, 600, 800, 1000, 1200, 1400]
+                                      }*/
+                                  },
+                                  "tooltip" : [{
+                                      "title" : "Country",
+                                      "field" : "country_txt"
+                                  },
+                                  {
+                                      "title" : "City",
+                                      "field" : "city"
+                                  },
+                                  {
+                                      "title" : "Year",
+                                      "field" : "iyear"
+                                  },
+                                  {
+                                      "title" : "Type",
+                                      "field" : "attacktype1_txt"
+                                  },
+                                  {
+                                      "title" : "Fatalities",
+                                      "field" : "nkill"
+                                  }]
+                              }
+                          }]
+                      }]
+                  };
