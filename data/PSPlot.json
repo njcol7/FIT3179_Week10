@@ -44,43 +44,86 @@
     {
       "filter" : "datum.Longitude != null"
     }],
-    "selection":{
-      "TypeSelector":{
-            "type" : "single",
-            "fields": ["attacktype1_txt"],
-            "bind": {"input": "select", "options": [null, "Assassination", "Hostage Taking (Kidnapping)", "Bombing/Explosion", "Facility/Infrastructure Attack", "Armed Assault", "Hijacking", "Unknown"]}
-      }
+    "layer": [{
+        "selection":{
+            "TypeSelector":{
+                "type" : "single",
+                "fields": ["attacktype1_txt"],
+                "bind": {
+                    "input": "select",
+                    "options": [
+                        null,
+                        "Assassination",
+                        "Hostage Taking (Kidnapping)",
+                        "Bombing/Explosion",
+                        "Facility/Infrastructure Attack",
+                        "Armed Assault",
+                        "Hijacking",
+                        "Unknown"
+                    ]
+                }
+            }
+        },
+        "mark": "circle",
+            "encoding": {
+            "latitude":{
+                "field" : "Latitude"
+            },
+            "longitude":{
+                "field" : "Longitude"
+            },
+            "size": {
+                "field": "total",
+                "type":"quantitative",
+                "scale": {
+                "type": "log"
+                }
+            },
+            "color" :{
+                "field": "total",
+                "type":"quantitative",
+                "scale" : {
+                "scheme" : "reds"
+                }
+            },
+            "tooltip" : [{
+                "title" : "Country",
+                "field" : "country_txt"
+                },
+                {
+                "title" : "Number of Attacks",
+                "field" : "total"
+            }]
+        }
     },
-    "mark": "circle",
-    "encoding": {
-      "latitude":{
-        "field" : "Latitude"
-      },
-      "longitude":{
-        "field" : "Longitude"
-      },
-      "size": {
-        "field": "total",
-        "type":"quantitative",
-        "scale": {
-          "type": "log"
+    {
+        "mark": {
+            "type": "text",
+            "align":"right",
+            "baseline":"middle",
+            "dx":-12,
+            "fontSize":11.5,
+            "fontStyle":"italic"
+        },
+        "encoding":{
+            "latitude":{
+                "field" : "Latitude"
+            },
+            "longitude":{
+                "field" : "Longitude"
+            },
+            "text":{
+                "field":"total",
+                "type":"nominal"
+            },
+            "opacity":{
+            "condition":{
+                "test":"datum['total']>2500",
+                "value":1
+            },
+            "value":0
+            }
         }
-      },
-      "color" :{
-        "field": "total",
-        "type":"quantitative",
-        "scale" : {
-          "scheme" : "reds"
-        }
-      },
-      "tooltip" : [{
-          "title" : "Country",
-          "field" : "country_txt"
-      },
-      {
-          "title" : "Number of Attacks",
-          "field" : "total"
-      }]
-    }
+    }]
   }]
 }
